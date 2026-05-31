@@ -1,0 +1,101 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String?
+  googleId  String?  @unique
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Person {
+  id              String         @id @default(uuid())
+  firstName       String
+  lastName        String
+  dateOfBirth     DateTime?
+  dateOfDeath     DateTime?
+  gender          Gender
+  bio             String?
+  relationships   Relationship[] @relation("PersonToRelationship")
+  relatedTo       Relationship[] @relation("RelatedPersonToRelationship")
+  grave           Grave?
+  memorialEvents  MemorialEvent[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+model Relationship {
+  id               String           @id @default(uuid())
+  personId         String
+  relatedPersonId  String
+  type             RelationshipType
+  person           Person           @relation("PersonToRelationship", fields: [personId], references: [id])
+  relatedPerson    Person           @relation("RelatedPersonToRelationship", fields: [relatedPersonId], references: [id])
+}
+
+enum RelationshipType {
+  PARENT
+  CHILD
+  SPOUSE
+}
+
+model Grave {
+  id             String       @id @default(uuid())
+  personId       String       @unique
+  person         Person       @relation(fields: [personId], references: [id])
+  latitude       Float
+  longitude      Float
+  cemeteryName   String?
+  locationDetail String?
+  photos         GravePhoto[]
+  qrCode         QRCode?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model GravePhoto {
+  id        String   @id @default(uuid())
+  graveId   String
+  grave     Grave    @relation(fields: [graveId], references: [id])
+  url       String
+  createdAt DateTime @default(now())
+}
+
+model QRCode {
+  id        String   @id @default(uuid())
+  graveId   String   @unique
+  grave     Grave    @relation(fields: [graveId], references: [id])
+  codeUrl   String
+  createdAt DateTime @default(now())
+}
+
+model MemorialEvent {
+  id          String   @id @default(uuid())
+  personId    String
+  person      Person   @relation(fields: [personId], references: [id])
+  eventDate   DateTime
+  type        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
