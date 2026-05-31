@@ -19,7 +19,7 @@ export const getGraves = async (req: AuthRequest, res: Response): Promise<void> 
 
 export const getGraveById = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const grave = await prisma.grave.findUnique({
       where: { id },
       include: {
@@ -64,7 +64,7 @@ export const createGrave = async (req: AuthRequest, res: Response): Promise<void
 
 export const updateGrave = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { latitude, longitude, cemeteryName, locationDetail } = req.body;
 
     const updatedGrave = await prisma.grave.update({
@@ -86,7 +86,7 @@ export const updateGrave = async (req: AuthRequest, res: Response): Promise<void
 
 export const deleteGrave = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     
     // Delete photos first
     await prisma.gravePhoto.deleteMany({
@@ -109,7 +109,7 @@ export const deleteGrave = async (req: AuthRequest, res: Response): Promise<void
 
 export const addGravePhoto = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { url } = req.body; // In a real app, you would upload to Firebase Storage, then save the URL here.
 
     if (!url) {

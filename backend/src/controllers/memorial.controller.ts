@@ -38,7 +38,7 @@ export const createMemorialEvent = async (req: AuthRequest, res: Response): Prom
 
 export const updateMemorialEvent = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { eventDate, type, description } = req.body;
 
     const updatedEvent = await prisma.memorialEvent.update({
@@ -59,7 +59,7 @@ export const updateMemorialEvent = async (req: AuthRequest, res: Response): Prom
 
 export const deleteMemorialEvent = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     await prisma.memorialEvent.delete({ where: { id } });
     res.status(200).json({ message: 'Memorial event deleted successfully' });
   } catch (error) {

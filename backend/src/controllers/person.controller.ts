@@ -21,7 +21,7 @@ export const getPersons = async (req: AuthRequest, res: Response): Promise<void>
 
 export const getPersonById = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const person = await prisma.person.findUnique({
       where: { id },
       include: {
@@ -72,7 +72,7 @@ export const createPerson = async (req: AuthRequest, res: Response): Promise<voi
 
 export const updatePerson = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { firstName, lastName, dateOfBirth, dateOfDeath, gender, bio } = req.body;
 
     const updatedPerson = await prisma.person.update({
@@ -96,7 +96,7 @@ export const updatePerson = async (req: AuthRequest, res: Response): Promise<voi
 
 export const deletePerson = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
 
     // Delete related relationships first to avoid foreign key constraints errors
     await prisma.relationship.deleteMany({

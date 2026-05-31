@@ -4,7 +4,7 @@ import prisma from '../config/db';
 
 export const getQRCodeByGraveId = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { graveId } = req.params;
+    const graveId = req.params.graveId as string;
     const qrCode = await prisma.qRCode.findUnique({
       where: { graveId },
       include: {
